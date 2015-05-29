@@ -104,26 +104,37 @@ void loop() {
   int motor_speed_left = 0;  // Скорость левого колеса
   int motor_speed_right = 0; // Скорость правого колеса
   
-  if (sensor_left < 100 and sensor_right < 100)
+  if (sensor_left < 100 && sensor_right < 100)
   {   
     center_error = sensor_left_center - sensor_right_center;
     last_error = sensor_left - sensor_right;
     
-    correct(center_error, last_error, sensor_prop)
+    correct(center_error, last_error, sensor_prop);
+    
+    turn(center_error, last_error, motor_speed_left, motor_speed_right);
+  }
+  else if (sensor_left > 100 && sensor_right > 100)
+  {
+    center_error = sensor_right_center - sensor_left_center;
+    last_error = sensor_right - sensor_left;
+    
+    correct(center_error, last_error, sensor_prop);
     
     turn(center_error, last_error, motor_speed_left, motor_speed_right);
   }
   else
   {
-    center_error = sensor_right_center - sensor_left_center;
-    last_error = sensor_right - sensor_left;
+    center_error = sensor_left_center - sensor_right_center;
+    last_error = sensor_left - sensor_right;
     
-    correct(center_error, last_error, sensor_prop)
+    correct(center_error, last_error, sensor_prop);
     
+    motor_speed = 0;
     turn(center_error, last_error, motor_speed_left, motor_speed_right);
   }
   
   runMotors(motor_speed_left, motor_speed_right);
+  motor_speed = 140;
 
   delay(50);
 }
