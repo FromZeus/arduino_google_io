@@ -83,6 +83,15 @@ void turn(int center_error, int last_error, int &motor_speed_left, int &motor_sp
     }
 }
 
+void correct(int &center_error, int &last_error)
+{
+    center_error /= sensor_prop;
+    last_error /= sensor_prop;
+    
+    center_error = center_error > max_control ? max_control : center_error;
+    center_error = center_error < (-max_control) ? (-max_control) : center_error;
+}
+
 void loop() {
   readSensors();
   printSensors();  
@@ -92,25 +101,27 @@ void loop() {
   int motor_speed_left = 0;  // Скорость левого колеса
   int motor_speed_right = 0; // Скорость правого колеса
   
-  center_error /= sensor_prop;
-  last_error /= sensor_prop;
-  
-  center_error = center_error > max_control ? max_control : center_error;
-  center_error = center_error < (-max_control) ? (-max_control) : center_error;
-  
   if (sensor_left < 100 and sensor_right < 100)
-  {
+  {   
     center_error = sensor_left_center - sensor_right_center;
     last_error = sensor_left - sensor_right;
+    
+    correct(center_error, last_error)
+    
+    turn(center_error, last_error, motor_speed_left, motor_speed_right);
+  }
+  else if (sensor_left > 100 and sensor_right > 100)
+  {
+    center_error = sensor_right_center - sensor_left_center;
+    last_error = sensor_right - sensor_left;
+    
+    
     
     turn(center_error, last_error, motor_speed_left, motor_speed_right);
   }
   else
   {
-    center_error = sensor_right_center - sensor_left_center;
-    last_error = sensor_right - sensor_left;
     
-    turn(center_error, last_error, motor_speed_left, motor_speed_right);
   }
   
   runMotors(motor_speed_left, motor_speed_right);
