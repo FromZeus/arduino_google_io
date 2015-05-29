@@ -79,11 +79,11 @@ void turn(int center_error, int last_error, int &motor_speed_left, int &motor_sp
     else
     {
       motor_speed_left = motor_speed + center_error;
-      motor_speed_right = motor_speed - center_error;  
+      motor_speed_right = motor_speed - center_error;
     }
 }
 
-void correct(int &center_error, int &last_error)
+void correct(int &center_error, int &last_error, int sensor_prop)
 {
     center_error /= sensor_prop;
     last_error /= sensor_prop;
@@ -109,7 +109,7 @@ void loop() {
     center_error = sensor_left_center - sensor_right_center;
     last_error = sensor_left - sensor_right;
     
-    correct(center_error, last_error)
+    correct(center_error, last_error, sensor_prop)
     
     turn(center_error, last_error, motor_speed_left, motor_speed_right);
   }
@@ -118,7 +118,7 @@ void loop() {
     center_error = sensor_right_center - sensor_left_center;
     last_error = sensor_right - sensor_left;
     
-    correct(center_error, last_error)
+    correct(center_error, last_error, sensor_prop)
     
     turn(center_error, last_error, motor_speed_left, motor_speed_right);
   }
