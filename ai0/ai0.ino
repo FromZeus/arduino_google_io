@@ -90,6 +90,9 @@ void correct(int &center_error, int &last_error)
     
     center_error = center_error > max_control ? max_control : center_error;
     center_error = center_error < (-max_control) ? (-max_control) : center_error;
+    
+    last_error = last_error > max_control ? max_control : last_error;
+    last_error = last_error < (-max_control) ? (-max_control) : last_error;
 }
 
 void loop() {
@@ -110,18 +113,14 @@ void loop() {
     
     turn(center_error, last_error, motor_speed_left, motor_speed_right);
   }
-  else if (sensor_left > 100 and sensor_right > 100)
+  else
   {
     center_error = sensor_right_center - sensor_left_center;
     last_error = sensor_right - sensor_left;
     
-    
+    correct(center_error, last_error)
     
     turn(center_error, last_error, motor_speed_left, motor_speed_right);
-  }
-  else
-  {
-    
   }
   
   runMotors(motor_speed_left, motor_speed_right);
